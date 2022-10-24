@@ -1,9 +1,12 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <nav class="navbar navbar-light bg-transparent">
+      <span class="navbar-brand mb-0 h1">L'horaire</span>
+    </nav>
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
-    </div>
+    </div> -->
     <router-view />
   </div>
 </template>
