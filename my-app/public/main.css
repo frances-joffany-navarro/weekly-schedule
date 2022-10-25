@@ -8,12 +8,18 @@ label {
   text-align: left;
 }
 
-a.btn:nth-child(odd) {
-  margin: 0 1px
+a.btn{
+  margin: 0 10px
 }
 
 p.day-label {
   font-size: xx-small;
   color: beige;
+  margin: 0;
+}
+
+p.time-label {
+  font-size: small;
+  color: grey;
   margin: 0;
 }
