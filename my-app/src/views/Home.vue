@@ -1,10 +1,9 @@
 <template>
   <main class="container">
-    <div>
-      <a class="btn btn-success text-right" href="#" role="button"
-        >Add Schedule</a
-      >
+    <div class="text-right">
+      <a class="btn btn-success" href="#" role="button">Add Schedule</a>
     </div>
+    <h3 class="text-left">{{ month + " " + year }}</h3>
     <div class="btn-group mt-2 btn-block" role="group" aria-label="Schedule">
       <a
         @click="schedByDate('23/10/2022')"
@@ -64,21 +63,21 @@
         29</a
       >
     </div>
-    <div class="my-2">
-      <ul v-if="schedByDateData" class="list-group">
-        <li
-          v-for="schedule in schedByDateData"
-          :key="schedule.id"
-          class="list-group-item"
-        >
-          <p class="time-label">
-            {{ `${schedule.schedTimeIn} - ${schedule.schedTimeOut}` }}
-          </p>
-          {{ schedule.schedName }}
-        </li>
-      </ul>
-      <span v-else>No Schedule</span>
+    <div v-if="schedByDateData.length > 0" class="my-2">
+      <div
+        v-for="schedule in schedByDateData"
+        :key="schedule.id"
+        class="alert alert-primary"
+        role="alert"
+      >
+        <p class="time-label">
+          {{ `${schedule.schedTimeIn} - ${schedule.schedTimeOut}` }}
+        </p>
+        {{ schedule.schedName }}
+      </div>
     </div>
+    <div v-else class="alert alert-info my-2" role="alert">No Schedule</div>
+    {{ date }}
   </main>
 </template>
 
@@ -89,6 +88,8 @@ export default {
   name: "Home",
   data() {
     return {
+      year: "",
+      month: "",
       schedules: [
         {
           schedId: 1,
@@ -118,12 +119,54 @@ export default {
       schedByDateData: [],
     };
   },
+  mounted() {
+    this.year = this.getCurrentYear();
+    this.month = this.getCurrentMonth();
+  },
   methods: {
     schedByDate(date) {
       this.schedByDateData = [];
       this.schedByDateData = this.schedules.filter(
         (sched) => sched.schedDate === date
       );
+    },
+    weeklyDate() {
+      let current = new Date();
+      return current;
+    },
+    getCurrentYear() {
+      let current = new Date();
+      return current.getFullYear();
+    },
+    getCurrentMonth() {
+      let current = new Date();
+
+      switch (current.getMonth()) {
+        case 0:
+          return "January";
+        case 1:
+          return "February";
+        case 2:
+          return "March";
+        case 3:
+          return "April";
+        case 4:
+          return "May";
+        case 5:
+          return "June";
+        case 6:
+          return "July";
+        case 7:
+          return "August";
+        case 8:
+          return "September";
+        case 9:
+          return "October";
+        case 10:
+          return "November";
+        case 11:
+          return "December";
+      }
     },
   },
 };
