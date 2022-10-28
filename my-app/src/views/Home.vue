@@ -3,7 +3,7 @@
     <div class="text-right">
       <a class="btn btn-success" href="#" role="button">Add Schedule</a>
     </div>
-    <h3 class="text-left">{{ month + " " + year }}</h3>
+    <h3 class="text-left">{{ monthText + " " + year }}</h3>
     <div class="btn-group mt-2 btn-block" role="group" aria-label="Schedule">
       <a
         @click="schedByDate('23/10/2022')"
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div v-else class="alert alert-info my-2" role="alert">No Schedule</div>
-    {{ date }}
+    {{ weeklyDate }}
   </main>
 </template>
 
@@ -90,6 +90,8 @@ export default {
     return {
       year: "",
       month: "",
+      monthText: "",
+      weeklyDate: [],
       schedules: [
         {
           schedId: 1,
@@ -122,6 +124,8 @@ export default {
   mounted() {
     this.year = this.getCurrentYear();
     this.month = this.getCurrentMonth();
+    this.monthText = this.getMonthEquivalent;
+    this.getWeeklyDate();
   },
   methods: {
     schedByDate(date) {
@@ -130,18 +134,54 @@ export default {
         (sched) => sched.schedDate === date
       );
     },
-    weeklyDate() {
+    /* weeklyDate() {
       let current = new Date();
       return current;
-    },
+    }, */
     getCurrentYear() {
       let current = new Date();
       return current.getFullYear();
     },
     getCurrentMonth() {
       let current = new Date();
+      return current.getMonth();
+    },
+    getWeeklyDate() {
+      let current = new Date();
+      var firstDate = current.getDate() - current.getDay();
+      var lastDate = firstDate + 6;
+      var remainder = 0;
 
-      switch (current.getMonth()) {
+      //check if the month has 30, 31, etc.
+      let getTotalNumberOfDays = new Date(
+        this.year,
+        this.month + 1,
+        0
+      ).getDate();
+
+      if (lastDate > getTotalNumberOfDays) {
+        remainder = lastDate - getTotalNumberOfDays;
+        lastDate = getTotalNumberOfDays;
+      }
+
+      //iterate the range of the dates to create an array of the weeklydates
+      for (let index = firstDate; index <= lastDate; index++) {
+        this.weeklyDate.push(index);
+      }
+
+      if (remainder > 0) {
+        firstDate = 1;
+        lastDate = remainder;
+        for (let index = firstDate; index <= lastDate; index++) {
+          this.weeklyDate.push(index);
+        }
+        remainder = 0;
+      }
+    },
+  },
+  computed: {
+    getMonthEquivalent() {
+      switch (this.month) {
         case 0:
           return "January";
         case 1:
@@ -167,6 +207,7 @@ export default {
         case 11:
           return "December";
       }
+      return "";
     },
   },
 };
