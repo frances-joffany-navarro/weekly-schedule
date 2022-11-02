@@ -6,62 +6,16 @@
     <h3 class="text-left">{{ monthText + " " + year }}</h3>
     <div class="btn-group mt-2 btn-block" role="group" aria-label="Schedule">
       <a
-        @click="schedByDate('23/10/2022')"
+        v-for="date in weeklyDates"
+        :key="date.id"
+        @click="getSchedByDate(date.year, date.month, date.date)"
         class="btn btn-secondary"
         href="#"
         role="button"
       >
-        <p class="day-label">SUN</p>
-        23
+        <p class="day-label">{{ date.day }}</p>
+        {{ date.date }}
       </a>
-      <a
-        @click="schedByDate('24/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">MON</p>
-        24</a
-      >
-      <a
-        @click="schedByDate('25/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">TUE</p>
-        25</a
-      >
-      <a
-        @click="schedByDate('26/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">WED</p>
-        26</a
-      >
-      <a
-        @click="schedByDate('27/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">THU</p>
-        27</a
-      >
-      <a
-        @click="schedByDate('28/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">FRI</p>
-        28</a
-      >
-      <a
-        @click="schedByDate('29/10/2022')"
-        class="btn btn-secondary"
-        href="#"
-        role="button"
-        ><p class="day-label">SAT</p>
-        29</a
-      >
     </div>
     <div v-if="schedByDateData.length > 0" class="my-2">
       <div
@@ -77,7 +31,7 @@
       </div>
     </div>
     <div v-else class="alert alert-info my-2" role="alert">No Schedule</div>
-    {{ weeklyDate }}
+    <pre> {{ weeklyDates }}</pre>
   </main>
 </template>
 
@@ -88,10 +42,11 @@ export default {
   name: "Home",
   data() {
     return {
-      year: "",
-      month: "",
+      year: 0,
+      month: 0,
       monthText: "",
-      weeklyDate: [],
+      weeklyDates: [],
+      count: 0,
       schedules: [
         {
           schedId: 1,
@@ -119,95 +74,104 @@ export default {
         },
       ],
       schedByDateData: [],
+      fullDate: [],
     };
   },
   mounted() {
-    this.year = this.getCurrentYear();
-    this.month = this.getCurrentMonth();
+    let currentDate = (this.fullDate = this.getFullDate());
+    this.year = currentDate.year;
+    this.month = currentDate.month;
+
     this.monthText = this.getMonthEquivalent;
-    this.getWeeklyDate();
+    this.getWeeklyDates();
   },
   methods: {
-    schedByDate(date) {
+    getSchedByDate(year, month, date) {
       this.schedByDateData = [];
       this.schedByDateData = this.schedules.filter(
-        (sched) => sched.schedDate === date
+        (sched) => sched.schedDate === `${date}/${month + 1}/${year}`
       );
+      this.year = year;
+      this.month = month;
+      this.monthText = this.getMonth(month);
     },
-    /* weeklyDate() {
-      let current = new Date();
-      return current;
-    }, */
-    getCurrentYear() {
-      let current = new Date();
-      return current.getFullYear();
-    },
-    getCurrentMonth() {
-      let current = new Date();
-      return current.getMonth();
-    },
-    getWeeklyDate() {
-      let current = new Date();
-      var firstDate = current.getDate() - current.getDay();
-      var lastDate = firstDate + 6;
-      var remainder = 0;
-
-      //check if the month has 30, 31, etc.
-      let getTotalNumberOfDays = new Date(
-        this.year,
-        this.month + 1,
-        0
-      ).getDate();
-
-      if (lastDate > getTotalNumberOfDays) {
-        remainder = lastDate - getTotalNumberOfDays;
-        lastDate = getTotalNumberOfDays;
+    getFullDate(year, month, date) {
+      var datum;
+      if (year && month && date) {
+        datum = new Date(year, month, date);
+      } else {
+        datum = new Date();
       }
+      return { year: datum.getFullYear(), month: datum.getMonth() };
+    },
+    getWeeklyDates() {
+      var today = new Date();
+
+      var firstDate = today.getDate() - today.getDay();
+      var lastDate = firstDate + 6;
 
       //iterate the range of the dates to create an array of the weeklydates
       for (let index = firstDate; index <= lastDate; index++) {
-        this.weeklyDate.push(index);
-      }
+        var other = new Date(today.getFullYear(), today.getMonth(), index);
 
-      if (remainder > 0) {
-        firstDate = 1;
-        lastDate = remainder;
-        for (let index = firstDate; index <= lastDate; index++) {
-          this.weeklyDate.push(index);
-        }
-        remainder = 0;
+        this.weeklyDates.push({
+          id: this.count++,
+          date: other.getDate(),
+          year: other.getFullYear(),
+          month: other.getMonth(),
+          day: this.getDay(
+            other.getFullYear(),
+            other.getMonth(),
+            other.getDate()
+          ),
+        });
       }
+    },
+    getDay(year, month, date) {
+      let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      let current = new Date(year, month, date);
+      return days[current.getDay()];
+    },
+    getTotalNumberOfDays(year, month) {
+      // month here accept 0 to 11
+      // if date is 0 then it will get the previous month last date but since we want to get the current month last date we need to add plus 1 to the month
+      return new Date(year, month, 0).getDate();
+    },
+    getMonth(month) {
+      let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      return months[month];
     },
   },
   computed: {
     getMonthEquivalent() {
-      switch (this.month) {
-        case 0:
-          return "January";
-        case 1:
-          return "February";
-        case 2:
-          return "March";
-        case 3:
-          return "April";
-        case 4:
-          return "May";
-        case 5:
-          return "June";
-        case 6:
-          return "July";
-        case 7:
-          return "August";
-        case 8:
-          return "September";
-        case 9:
-          return "October";
-        case 10:
-          return "November";
-        case 11:
-          return "December";
-      }
-      return "";
+      let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      return months[this.month];
     },
   },
 };
