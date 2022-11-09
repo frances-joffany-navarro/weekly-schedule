@@ -8,10 +8,11 @@
       <a
         v-for="date in weeklyDates"
         :key="date.id"
-        @click="getSchedByDate(date.year, date.month, date.date)"
+        @click="getSchedByDate(date.year, date.month, date.date, date.id)"
         class="btn btn-secondary"
         href="#"
         role="button"
+        :class="{ active: activeNavigation === date.id ? true : false }"
       >
         <p class="day-label">{{ date.day }}</p>
         {{ date.date }}
@@ -44,6 +45,7 @@ export default {
     return {
       year: 0,
       month: 0,
+      date: 0,
       monthText: "",
       weeklyDates: [],
       count: 0,
@@ -53,7 +55,7 @@ export default {
           schedName: "French Class",
           schedTimeIn: "18:30",
           schedTimeOut: "21:30",
-          schedDate: "24/10/2022",
+          schedDate: "1/11/2022",
           schedDay: "Monday",
         },
         {
@@ -61,7 +63,7 @@ export default {
           schedName: "Work",
           schedTimeIn: "06:00",
           schedTimeOut: "13:30",
-          schedDate: "24/10/2022",
+          schedDate: "1/11/2022",
           schedDay: "Monday",
         },
         {
@@ -69,24 +71,28 @@ export default {
           schedName: "Workout",
           schedTimeIn: "07:00",
           schedTimeOut: "08:00",
-          schedDate: "25/10/2022",
+          schedDate: "2/11/2022",
           schedDay: "Tuesday",
         },
       ],
       schedByDateData: [],
       fullDate: [],
+      activeNavigation: "",
     };
   },
   mounted() {
     let currentDate = (this.fullDate = this.getFullDate());
     this.year = currentDate.year;
     this.month = currentDate.month;
+    this.date = currentDate.date;
+
+    this.getSchedByDate(this.year, this.month, this.date);
 
     this.monthText = this.getMonthEquivalent;
     this.getWeeklyDates();
   },
   methods: {
-    getSchedByDate(year, month, date) {
+    getSchedByDate(year, month, date, id) {
       this.schedByDateData = [];
       this.schedByDateData = this.schedules.filter(
         (sched) => sched.schedDate === `${date}/${month + 1}/${year}`
@@ -94,6 +100,7 @@ export default {
       this.year = year;
       this.month = month;
       this.monthText = this.getMonth(month);
+      this.activeNavigation = id;
     },
     getFullDate(year, month, date) {
       var datum;
@@ -102,7 +109,11 @@ export default {
       } else {
         datum = new Date();
       }
-      return { year: datum.getFullYear(), month: datum.getMonth() };
+      return {
+        year: datum.getFullYear(),
+        month: datum.getMonth(),
+        date: datum.getDate(),
+      };
     },
     getWeeklyDates() {
       var today = new Date();
