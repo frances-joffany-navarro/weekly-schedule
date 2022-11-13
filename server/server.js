@@ -6,9 +6,11 @@ require('dotenv').config()
 const app = express()
 
 const db = require("./models")
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync()
+
+/*{ force: true }).then(() => {
   console.log("Drop and re-sync db.");
-})
+} */
 
 var corsOptions = {
   origin: "http://localhost:8081/"
