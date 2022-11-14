@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require("cors")
 require('dotenv').config()
 
+
 const app = express()
 
 const db = require("./models")
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
   res.json({ message: 'Welcome to Weekly Schedule Project Server.' })
 })
 
+require("./routes/schedule.routes")(app)
 const PORT = process.env.PORT || 8080
 
 app.listen(PORT, () => {
