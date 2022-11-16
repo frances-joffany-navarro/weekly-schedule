@@ -7,7 +7,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
+    alias: "/schedules",
+    name: "schedules",
     component: Home,
   },
   {
@@ -18,6 +19,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/add",
+    name: "add",
+    component: () => import("../components/AddSchedule"),
   },
 ];
 

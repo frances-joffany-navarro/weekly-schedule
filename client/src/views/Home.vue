@@ -32,7 +32,7 @@
       </div>
     </div>
     <div v-else class="alert alert-info my-2" role="alert">No Schedule</div>
-    <pre> {{ weeklyDates }}</pre>
+    <!-- <pre> {{ weeklyDates }}</pre> -->
   </main>
 </template>
 
@@ -55,15 +55,15 @@ export default {
           schedName: "French Class",
           schedTimeIn: "18:30",
           schedTimeOut: "21:30",
-          schedDate: "1/11/2022",
+          schedDate: "16/11/2022",
           schedDay: "Monday",
         },
         {
           schedId: 2,
           schedName: "Work",
-          schedTimeIn: "06:00",
-          schedTimeOut: "13:30",
-          schedDate: "1/11/2022",
+          schedTimeIn: "13:00",
+          schedTimeOut: "21:30",
+          schedDate: "17/11/2022",
           schedDay: "Monday",
         },
         {
@@ -71,7 +71,7 @@ export default {
           schedName: "Workout",
           schedTimeIn: "07:00",
           schedTimeOut: "08:00",
-          schedDate: "2/11/2022",
+          schedDate: "17/11/2022",
           schedDay: "Tuesday",
         },
       ],
